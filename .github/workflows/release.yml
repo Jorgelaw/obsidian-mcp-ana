@@ -1,0 +1,82 @@
+name: Release Obsidian Plugin
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"   # dispara em tags como 1.0.0, 1.2.3
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout do código
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Instalar Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      # 3. Instalar dependências
+      - name: Instalar dependências
+        run: npm ci
+
+      # 4. Build de produção
+      - name: Build
+        run: npm run build
+
+      # 5. Verificar que os arquivos obrigatórios existem
+      - name: Verificar artefatos
+        run: |
+          test -f main.js    || (echo "❌ main.js não encontrado" && exit 1)
+          test -f manifest.json || (echo "❌ manifest.json não encontrado" && exit 1)
+          test -f styles.css || (echo "❌ styles.css não encontrado" && exit 1)
+          echo "✅ Artefatos OK"
+
+      # 6. Sincronizar versão: a tag deve bater com manifest.json
+      - name: Verificar versão
+        run: |
+          TAG_VERSION="${{ github.ref_name }}"
+          MANIFEST_VERSION=$(node -p "require('./manifest.json').version")
+          if [ "$TAG_VERSION" != "$MANIFEST_VERSION" ]; then
+            echo "❌ Tag ($TAG_VERSION) ≠ manifest.json ($MANIFEST_VERSION)"
+            echo "   Atualize manifest.json antes de criar a tag."
+            exit 1
+          fi
+          echo "✅ Versão $TAG_VERSION confirmada"
+
+      # 7. Criar release no GitHub com os 3 arquivos obrigatórios para BRAT
+      - name: Criar GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "v${{ github.ref_name }}"
+          body: |
+            ## Obsidian MCP Bridge v${{ github.ref_name }}
+
+            ### Instalação via BRAT
+            1. Instale o plugin **BRAT** no Obsidian
+            2. Vá em **Configurações → BRAT → Add Beta Plugin**
+            3. Cole: `https://github.com/Jorgelaw/obsidian-mcp-ana`
+            4. Clique em **Add Plugin**
+
+            ### Instalação manual
+            Baixe os três arquivos abaixo e coloque em:
+            `.obsidian/plugins/obsidian-mcp-bridge/`
+
+            ---
+            📖 [Documentação completa](https://github.com/Jorgelaw/obsidian-mcp-ana#readme)
+          files: |
+            main.js
+            manifest.json
+            styles.css
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
