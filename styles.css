@@ -1,0 +1,29 @@
+/* MCP Bridge — Obsidian Plugin Styles */
+
+.mcp-bridge-ribbon {
+  color: var(--color-accent);
+}
+
+.mcp-bridge-status-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.mcp-bridge-status-badge.connected {
+  background: var(--color-green);
+  color: white;
+}
+
+.mcp-bridge-status-badge.disconnected {
+  background: var(--color-red);
+  color: white;
+}
+
+.mcp-bridge-status-badge.connecting {
+  background: var(--color-yellow);
+  color: var(--text-normal);
+}

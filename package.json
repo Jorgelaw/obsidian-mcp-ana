@@ -1,0 +1,30 @@
+{
+  "name": "obsidian-mcp-bridge",
+  "version": "1.0.0",
+  "description": "MCP Server + Client bridge for Obsidian — exposes vault as MCP tools and connects to external MCP servers",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+    "version": "node version-bump.mjs && git add manifest.json versions.json"
+  },
+  "keywords": ["obsidian", "mcp", "ai", "claude"],
+  "author": "ToadaLab / TJMA",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/express": "^4.17.21",
+    "builtin-modules": "^3.3.0",
+    "esbuild": "^0.20.0",
+    "obsidian": "latest",
+    "tslib": "2.6.2",
+    "typescript": "5.3.3"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "eventsource": "^2.0.2",
+    "zod": "^3.22.4"
+  }
+}

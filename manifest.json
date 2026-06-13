@@ -1,0 +1,10 @@
+{
+  "id": "obsidian-mcp-bridge",
+  "name": "MCP Bridge",
+  "version": "1.0.0",
+  "minAppVersion": "1.4.0",
+  "description": "Exposes your vault as an MCP server and connects to external MCP servers. Compatible with Claude Desktop, Claude Code, and any MCP client.",
+  "author": "ToadaLab / TJMA",
+  "authorUrl": "https://github.com/Jorgelaw",
+  "isDesktopOnly": true
+}
