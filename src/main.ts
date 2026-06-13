@@ -59,7 +59,7 @@ export default class McpBridgePlugin extends Plugin {
     // Ribbon icon
     const ribbonIcon = this.addRibbonIcon(
       "network",
-      "MCP Bridge",
+      "MCP ANA",
       () => this.showStatusModal()
     );
     ribbonIcon.addClass("mcp-bridge-ribbon");
@@ -67,7 +67,7 @@ export default class McpBridgePlugin extends Plugin {
     // Commands
     this.addCommand({
       id: "mcp-bridge-status",
-      name: "Mostrar status do MCP Bridge",
+      name: "Mostrar status do MCP ANA",
       callback: () => this.showStatusModal(),
     });
 
@@ -91,13 +91,13 @@ export default class McpBridgePlugin extends Plugin {
       },
     });
 
-    this.log("MCP Bridge carregado.");
+    this.log("MCP ANA carregado.");
   }
 
   async onunload() {
     await this.mcpServer.stop();
     await this.clientManager.disconnectAll();
-    this.log("MCP Bridge descarregado.");
+    this.log("MCP ANA descarregado.");
   }
 
   async loadSettings() {
@@ -110,7 +110,7 @@ export default class McpBridgePlugin extends Plugin {
 
   log(msg: string, ...args: unknown[]) {
     if (this.settings.debugMode) {
-      console.log(`[MCP Bridge] ${msg}`, ...args);
+      console.log(`[MCP ANA] ${msg}`, ...args);
     }
   }
 
@@ -123,7 +123,7 @@ export default class McpBridgePlugin extends Plugin {
     const totalClients = this.settings.externalServers.filter(s => s.enabled).length;
 
     new Notice(
-      `MCP Bridge\n${serverStatus}\n🔌 Clientes: ${connectedClients}/${totalClients} conectados`,
+      `MCP ANA\n${serverStatus}\n🔌 Clientes: ${connectedClients}/${totalClients} conectados`,
       8000
     );
   }
