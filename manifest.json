@@ -1,6 +1,6 @@
 {
-  "id": "obsidian-mcp-bridge",
-  "name": "MCP Bridge",
+  "id": "obsidian-mcp-ana",
+  "name": "MCP ANA",
   "version": "1.0.0",
   "minAppVersion": "1.4.0",
   "description": "Exposes your vault as an MCP server and connects to external MCP servers. Compatible with Claude Desktop, Claude Code, and any MCP client.",

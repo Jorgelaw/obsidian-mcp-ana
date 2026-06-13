@@ -1,5 +1,5 @@
 {
-  "name": "obsidian-mcp-bridge",
+  "name": "obsidian-mcp-ana",
   "version": "1.0.0",
   "description": "MCP Server + Client bridge for Obsidian — exposes vault as MCP tools and connects to external MCP servers",
   "main": "main.js",
