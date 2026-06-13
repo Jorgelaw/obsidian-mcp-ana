@@ -1,6 +1,6 @@
-# Obsidian MCP Bridge
+# Obsidian MCP ANA
 
-Plugin para Obsidian que funciona como **servidor MCP** (expõe o vault) **e cliente MCP** (conecta a servidores externos como MCP ANA PJe, DataJud, etc.) simultaneamente.
+Plugin para Obsidian que funciona como **servidor MCP** (expõe o vault) **e cliente MCP** (conecta a servidores externos como MCP ANA PJe, DataJud, etc.) simultaneamente. Compatível com Claude Desktop, Claude Code e qualquer cliente MCP.
 
 ---
 
@@ -10,27 +10,23 @@ Model Context Protocol (MCP) é o protocolo aberto da Anthropic para conectar LL
 
 ---
 
-## Instalação (desenvolvimento)
+## Instalação
 
-### Pré-requisitos
-- Node.js 18+
-- Obsidian 1.4+
+### Via BRAT (recomendado)
+1. Instale o plugin **BRAT** (Obsidian42 - BRAT) pela comunidade.
+2. **Configurações → BRAT → Add Beta Plugin** → cole: `https://github.com/Jorgelaw/obsidian-mcp-ana`
+3. Ative o **"MCP ANA"** em Plugins da comunidade.
 
-### Passos
+### Manual
+Baixe `main.js`, `manifest.json` e `styles.css` (da release ou do repositório) e coloque em `.obsidian/plugins/obsidian-mcp-ana/`. Em seguida, ative o **"MCP ANA"**.
 
+### Desenvolvimento
 ```bash
-# 1. Clone na pasta de plugins do vault
 cd /caminho/do/vault/.obsidian/plugins/
-git clone <repo> obsidian-mcp-bridge
-cd obsidian-mcp-bridge
-
-# 2. Instale dependências
+git clone https://github.com/Jorgelaw/obsidian-mcp-ana
+cd obsidian-mcp-ana
 npm install
-
-# 3. Build de desenvolvimento (com hot-reload)
-npm run dev
-
-# 4. No Obsidian: Configurações → Plugins da comunidade → Ativar "MCP Bridge"
+npm run build
 ```
 
 ---
@@ -41,32 +37,23 @@ npm run dev
 
 Após ativar, o servidor inicia automaticamente em `http://localhost:27123`.
 
-**Claude Desktop** (`claude_desktop_config.json`):
+**Claude Desktop** (`claude_desktop_config.json`) — use o transporte via `mcp-remote`:
 ```json
 {
   "mcpServers": {
-    "obsidian-vault": {
-      "url": "http://localhost:27123/sse"
+    "obsidian-mcp-ana": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "http://localhost:27123/sse"]
     }
   }
 }
 ```
 
-**Claude Code** (`.claude/settings.json` ou via CLI):
-```json
-{
-  "mcpServers": {
-    "obsidian": {
-      "type": "sse",
-      "url": "http://localhost:27123/sse"
-    }
-  }
-}
-```
+> O servidor implementa o transporte MCP HTTP+SSE (evento `endpoint` + respostas pelo stream SSE), compatível com `mcp-remote` e demais clientes MCP.
 
 ### Servidores Externos (Obsidian → PJe/DataJud)
 
-Em **Configurações → MCP Bridge → Servidores MCP Externos**:
+Em **Configurações → MCP ANA → Servidores MCP Externos**:
 
 1. Clique em **+ Adicionar** ou use um preset (MCP ANA PJe, MCP Nacional)
 2. Insira a URL SSE e o token de autenticação
@@ -76,19 +63,46 @@ Os resultados podem ser injetados automaticamente como notas Markdown na pasta c
 
 ---
 
-## Tools disponíveis (vault → Claude)
+## Ferramentas (26)
+
+**Notas e vault**
 
 | Tool | Descrição |
 |------|-----------|
-| `read_note` | Lê o conteúdo de uma nota |
-| `write_note` | Cria ou sobrescreve uma nota |
-| `append_note` | Adiciona texto ao final de uma nota |
-| `list_files` | Lista arquivos/pastas do vault |
-| `search_vault` | Busca full-text no vault |
+| `read_note` / `get_vault_file` | Lê o conteúdo de uma nota |
+| `write_note` / `create_vault_file` | Cria ou sobrescreve uma nota |
+| `append_note` / `append_to_vault_file` | Adiciona texto ao final de uma nota |
+| `patch_vault_file` | Insere/substitui relativo a heading, bloco (^id) ou frontmatter |
+| `delete_vault_file` | Move um arquivo para a lixeira (ou exclui) |
+| `list_files` / `list_vault_files` | Lista arquivos/pastas do vault |
 | `get_metadata` | Retorna frontmatter e metadados |
-| `open_note` | Abre uma nota no editor |
-| `run_command` | Executa comando Obsidian pelo ID |
-| `list_commands` | Lista comandos disponíveis |
+| `open_note` / `show_file_in_obsidian` | Abre uma nota no editor |
+| `run_command` / `list_commands` | Executa/lista comandos do Obsidian |
+
+**Busca**
+
+| Tool | Descrição |
+|------|-----------|
+| `search_vault` / `search_vault_simple` | Busca textual no vault |
+| `search_vault_smart` | Busca semântica (via Smart Connections) |
+
+**Nota ativa (editor)**
+
+| Tool | Descrição |
+|------|-----------|
+| `get_active_file` | Lê a nota aberta no editor |
+| `update_active_file` | Sobrescreve a nota ativa |
+| `append_to_active_file` | Adiciona ao final da nota ativa |
+| `patch_active_file` | Patch na nota ativa (heading/bloco/frontmatter) |
+| `delete_active_file` | Move a nota ativa para a lixeira |
+
+**Outras**
+
+| Tool | Descrição |
+|------|-----------|
+| `get_server_info` | Informações do servidor (vault, tools, porta) |
+| `fetch` | Busca o conteúdo de uma URL na web |
+| `execute_template` | Executa um template do Templater |
 
 ---
 
@@ -119,7 +133,7 @@ Claude Code / Claude Desktop
 |----------|--------|-----------|
 | `/health` | GET | Status do servidor |
 | `/sse` | GET | Transporte SSE para clientes MCP |
-| `/mcp` | POST | JSON-RPC para chamadas diretas |
+| `/mcp` | POST | JSON-RPC (com `?sessionId=` no transporte SSE) |
 
 ---
 
@@ -134,7 +148,7 @@ Claude Code / Claude Desktop
 ## Estrutura do projeto
 
 ```
-obsidian-mcp-bridge/
+obsidian-mcp-ana/
 ├── src/
 │   └── main.ts              # Entry point do plugin
 ├── server/
