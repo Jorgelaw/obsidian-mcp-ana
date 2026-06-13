@@ -1,7 +1,7 @@
 /**
  * SettingTab.ts
  * 
- * Interface de configuração do plugin MCP Bridge no Obsidian.
+ * Interface de configuração do plugin MCP ANA no Obsidian.
  * Permite configurar:
  *  - Porta e token do servidor MCP local
  *  - Servidores MCP externos (PJe, DataJud, etc.)
@@ -31,7 +31,7 @@ export class MpcBridgeSettingTab extends PluginSettingTab {
     containerEl.empty();
 
     // ── Header ────────────────────────────────────────────────────────────────
-    containerEl.createEl("h1", { text: "MCP Bridge" });
+    containerEl.createEl("h1", { text: "MCP ANA" });
     containerEl.createEl("p", {
       text: "Expõe seu vault como servidor MCP e conecta a servidores externos (PJe, DataJud, etc.)",
       cls: "setting-item-description",
