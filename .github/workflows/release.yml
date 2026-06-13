@@ -26,7 +26,7 @@ jobs:
 
       # 3. Instalar dependências
       - name: Instalar dependências
-        run: npm ci
+        run: npm install
 
       # 4. Build de produção
       - name: Build
@@ -68,7 +68,7 @@ jobs:
 
             ### Instalação manual
             Baixe os três arquivos abaixo e coloque em:
-            `.obsidian/plugins/obsidian-mcp-bridge/`
+            `.obsidian/plugins/obsidian-mcp-ana/`
 
             ---
             📖 [Documentação completa](https://github.com/Jorgelaw/obsidian-mcp-ana#readme)
