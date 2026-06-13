@@ -124,7 +124,7 @@ export class McpClientManager {
           await this.sendRequest(conn, "initialize", {
             protocolVersion: "2024-11-05",
             capabilities: {},
-            clientInfo: { name: "obsidian-mcp-bridge", version: "1.0.0" },
+            clientInfo: { name: "obsidian-mcp-ana", version: "1.0.0" },
           });
 
           // List available tools
